@@ -87,9 +87,12 @@ class MqttClient:
             "time": current_time,
         }
         headers = {"Content-Type": "application/json"}
-        response = requests.request(
-            "POST", f'{Config.BACKEND_HOST}/physical_entries/', json=payload, headers=headers)
-        print(response.text)
+        try:
+            response = requests.request(
+                "POST", f'{Config.BACKEND_HOST}/physical_entries/', json=payload, headers=headers)
+            print(response.text)
+        except Exception as e:
+            print(e)
 
     def on_connect(self, client, userdata, flags, rc):
         if rc == 0:
