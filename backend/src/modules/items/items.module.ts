@@ -3,9 +3,13 @@ import { ItemsService } from './items.service';
 import { ItemsController } from './items.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ItemEntity } from './item.entity';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ schema: ItemEntity, name: 'Item' }])],
+  imports: [
+    AuthModule,
+    MongooseModule.forFeature([{ schema: ItemEntity, name: 'Item' }]),
+  ],
   controllers: [ItemsController],
   providers: [ItemsService],
 })
