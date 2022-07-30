@@ -7,12 +7,14 @@ import {
   Delete,
   UseGuards,
   Put,
+  Req,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { CommonGaurd } from '../../gaurds/common.gaurd';
+import { SellerGaurd } from '../../gaurds/seller.gaurd';
 
 @Controller('order')
 @ApiTags('order')
@@ -20,8 +22,9 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.ordersService.create(createOrderDto);
+  @UseGuards(SellerGaurd)
+  create(@Body() createOrderDto: CreateOrderDto, @Req() request) {
+    return this.ordersService.create(createOrderDto, request.user);
   }
 
   @Get()
@@ -31,16 +34,13 @@ export class OrdersController {
   }
 
   @Get(':id')
+  @UseGuards(CommonGaurd)
   findOne(@Param('id') id: string) {
     return this.ordersService.findOne(id);
   }
 
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.ordersService.update(id, updateOrderDto);
-  }
-
   @Delete(':id')
+  @UseGuards(SellerGaurd)
   remove(@Param('id') id: string) {
     return this.ordersService.remove(id);
   }

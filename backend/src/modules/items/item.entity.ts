@@ -5,6 +5,7 @@ import { UserEntity } from '../auth/auth.entity';
 export interface Item extends Document {
   id: string;
   name: string;
+  buyer: string;
   description: string;
   price: string;
   publicKey: string;
