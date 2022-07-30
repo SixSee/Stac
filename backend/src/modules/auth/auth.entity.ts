@@ -11,6 +11,8 @@ export interface User extends Document {
   publicKey: string;
   privateKey: string;
   isDeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 export enum UserRole {
   BUYER = 'BUYER',
