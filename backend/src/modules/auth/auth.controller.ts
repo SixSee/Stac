@@ -9,18 +9,34 @@ import {
   ValidationPipe,
   UseGuards,
   Req,
+  HttpException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UserDTO } from './dto/auth.dto';
+import { UserDTO, UserLoginDto } from './dto/auth.dto';
 import { BuyerGaurd } from '../../gaurds/buyer.gaurd';
+import { UserRole } from './auth.entity';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('auth')
+@ApiTags('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
-  create(@Body(ValidationPipe) createAuthDto: UserDTO) {
-    return this.authService.create(createAuthDto);
+  @Post('/seller/signup')
+  async seller_signup(@Body(ValidationPipe) createAuthDto: UserDTO) {
+    await this.authService.create(createAuthDto, UserRole.SELLER);
+    throw new HttpException('Success', 200);
+  }
+
+  @Post('/buyer/signup')
+  async buyer_signup(@Body(ValidationPipe) createAuthDto: UserDTO) {
+    await this.authService.create(createAuthDto, UserRole.BUYER);
+    throw new HttpException('Success', 200);
+  }
+
+  @Post('/login')
+  async login(@Body(ValidationPipe) loginDto: UserLoginDto) {
+    return this.authService.login(loginDto);
   }
 
   @Get()
