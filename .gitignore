@@ -2,7 +2,7 @@
 .venv/
 
 **/.env
-
+**/__pycache__/
 # compiled output
 /dist
 /node_modules

@@ -1,4 +1,3 @@
-from decimal import Decimal
 import json
 import time
 import paho.mqtt.client as mqtt
@@ -20,7 +19,7 @@ class Config:
     MQTT_TOPIC = get_var("MQTT_TOPIC", "/readings/#")
     MQTT_PORT = get_var("MQTT_PORT", "1883")
     MQTT_HOST = get_var("MQTT_HOST", "127.0.0.1")
-    BACKEND_HOST = "https://3b4e-103-46-203-93.in.ngrok.io"
+    BACKEND_HOST = get_var("BACKEND_HOST", None)
 
 
 class MqttClient:
@@ -34,7 +33,6 @@ class MqttClient:
         self.username = Config.MQTT_USERNAME
         self.password = Config.MQTT_PASSWORD
 
-    #  run method override from Thread class
     def run(self):
         self.connect_to_broker()
 
@@ -61,38 +59,38 @@ class MqttClient:
         payload = msg.payload.decode('utf-8')
         payload = json.loads(payload)
 
-        temperature = int(payload.get('temperature', None))
-        humidity = int(payload.get('humidity', None))
+        x_axis = payload.get('x-axis', None)
+        y_axis = payload.get('y-axis', None)
+        z_axis = payload.get('z-axis', None)
+
+        if (not z_axis) or (not y_axis) or (not z_axis):
+            print("Improper data format... ")
+            return
         current_time = payload.get('current_time', None)
         print(
-            f"Received readings from device {device_id} on {current_time} on topic {msg.topic}")
+            f"Received readings from device {device_id} on {current_time}")
+
+        # TODO-> Filter out faulty readings and send 1 reading every minute
         # getting device information and thresholds for temperature and humidity
-        temperature_threshold = 15
-        ideal_temperature_val = -40
+        # temperature_threshold = 15
+        # ideal_temperature_val = -40
+        # ideal_humidity_val = 20
+        # humidity_threshold = 20
+        # if abs(temperature-ideal_temperature_val) > temperature_threshold or abs(humidity-ideal_humidity_val) > humidity_threshold:
+        print(
+            f"Sending faulty readings to the backend which makes a transaction on the blockhain network for device {device_id}")
+        payload = {
+            "device_id": device_id,
+            "x-axis": x_axis,
+            "y-axis": y_axis,
+            "z-axis": z_axis,
+            "time": current_time,
+        }
+        headers = {"Content-Type": "application/json"}
+        response = requests.request(
+            "POST", f'{Config.BACKEND_HOST}/physical_entries/', json=payload, headers=headers)
+        print(response.text)
 
-        ideal_humidity_val = 20
-        humidity_threshold = 20
-
-        if abs(temperature-ideal_temperature_val) > temperature_threshold or abs(humidity-ideal_humidity_val) > humidity_threshold:
-            # Code for faulty readings
-            data = {
-                "device_id": device_id,
-                "temperature": temperature,
-                "humidity": humidity,
-                "at_time": current_time,
-            }
-            # requests.post(Config.BACKEND_HOST,data=data)
-            print(
-                f"Sending faulty readings to the backend which makes a transaction on the blockhain network for device {device_id}")
-            payload = {
-                "oid": 1,
-                "temperature": temperature,
-                "humidity": humidity
-            }
-            headers = {"Content-Type": "application/json"}
-            response = requests.request("POST", f'{Config.BACKEND_HOST}/physical_entries/', json=payload, headers=headers)
-            print(response.text)
-    # The callback for when the client receives a CONNACK response from the server.
     def on_connect(self, client, userdata, flags, rc):
         if rc == 0:
             print("Connection successfull!")
