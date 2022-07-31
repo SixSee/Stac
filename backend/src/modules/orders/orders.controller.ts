@@ -15,6 +15,7 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { CommonGaurd } from '../../gaurds/common.gaurd';
 import { SellerGaurd } from '../../gaurds/seller.gaurd';
+import { BuyerGaurd } from '../../gaurds/buyer.gaurd';
 
 @Controller('order')
 @ApiTags('order')
@@ -31,6 +32,12 @@ export class OrdersController {
   @UseGuards(CommonGaurd)
   findAll() {
     return this.ordersService.findAll();
+  }
+
+  @Get('buyer_list')
+  @UseGuards(BuyerGaurd)
+  findAllByBuyer(@Req() request) {
+    return this.ordersService.findAllByBuyer(request.user);
   }
 
   @Get(':id')

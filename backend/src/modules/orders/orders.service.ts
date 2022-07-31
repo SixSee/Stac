@@ -36,6 +36,14 @@ export class OrdersService {
       .populate('itemId');
   }
 
+  findAllByBuyer(user) {
+    return this.order
+      .find({ buyer: user.id })
+      .populate('buyer')
+      .populate('seller')
+      .populate('itemId');
+  }
+
   findOne(id: string) {
     return this.order
       .findOne({ _id: id })
