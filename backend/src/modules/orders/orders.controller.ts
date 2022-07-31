@@ -56,6 +56,18 @@ export class OrdersController {
     return this.ordersService.findRefundedByBuyer(request.user);
   }
 
+  @Get('seller_completed_refunded')
+  @UseGuards(SellerGaurd)
+  findCompletedRefundsBySeller(@Req() request) {
+    return this.ordersService.findRefundedBySeller(request.user);
+  }
+
+  @Get('buyer_completed_refunded')
+  @UseGuards(BuyerGaurd)
+  findCompletedRefundsByBuyer(@Req() request) {
+    return this.ordersService.findRefundedByBuyer(request.user);
+  }
+
   @Get('buyer_list')
   @UseGuards(BuyerGaurd)
   findAllByBuyer(@Req() request) {
