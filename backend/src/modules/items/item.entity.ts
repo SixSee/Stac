@@ -5,8 +5,9 @@ import { UserEntity } from '../auth/auth.entity';
 export interface Item extends Document {
   id: string;
   name: string;
-  buyer: string;
+  seller: string;
   description: string;
+  quantity: number;
   price: string;
   image_link: string;
   createdAt: string;
@@ -19,6 +20,8 @@ export const ItemEntity = new mongoose.Schema(
     description: { type: String },
     price: { type: String },
     image_link: { type: String },
+    quantity: { type: Number },
+    seller: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   },
   { timestamps: true },
 );

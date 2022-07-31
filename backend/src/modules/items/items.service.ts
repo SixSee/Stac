@@ -12,10 +12,7 @@ export class ItemsService {
 
   async create(createItemDto: CreateItemDto, user) {
     const newItem: Item = new this.item(createItemDto);
-    if (user.role != UserRole.BUYER)
-      throw new HttpException('Buyer can create items', 400);
-    newItem.buyer = user.id;
-    //TODO-> Code to Public and Private key
+    newItem.seller = user.id;
     await newItem.save();
     throw new HttpException('Success', 200);
   }
@@ -35,6 +32,7 @@ export class ItemsService {
     item.description = updateItemDto.description;
     item.price = updateItemDto.price;
     item.image_link = updateItemDto.image_link;
+    item.quantity = updateItemDto.quantity;
     await item.save();
     throw new HttpException('Success', 200);
   }
@@ -44,7 +42,7 @@ export class ItemsService {
     throw new HttpException('Success', 200);
   }
 
-  getByBuyer(user: User) {
-    return this.item.find({ buyer: user.id });
+  getBySeller(user: User) {
+    return this.item.find({ seller: user.id });
   }
 }

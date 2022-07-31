@@ -16,14 +16,22 @@ export class OrdersService {
   async create(createOrderDto: CreateOrderDto, user) {
     const item: Item = await this.itemService.findOne(createOrderDto.itemId);
     if (!item) throw new HttpException('Item not found', 400);
+    if (item.quantity < 1) throw new HttpException('No more items left', 400);
     const newOrder = new this.order(createOrderDto);
-    newOrder.buyer = item.buyer;
-    newOrder.seller = user.id;
+    newOrder.seller = item.seller;
+    newOrder.buyer = user.id;
     newOrder.stacId = await this.getNewStacId();
     //TODO-> code to generate qr_code
     await newOrder.save();
-    throw new HttpException('Success', 200);
+    item.quantity -= 1;
+    await item.save();
+    return {
+      orderId: newOrder._id,
+      timestamp: newOrder.createdAt,
+      stacId: newOrder.stacId,
+    };
   }
+
   async getNewStacId(): Promise<string> {
     return '12345abcde';
   }
