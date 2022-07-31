@@ -75,8 +75,23 @@ export class OrdersService {
   async performRefund(id: string) {
     const order: Order = await this.findOne(id);
     if (!order) throw new HttpException('Order not found', 400);
-    order.refunded = 'true';
+    order.refunded = 'initiated';
     order.refund_status = 'started'; // should be an enum but idc
+    await order.save();
+    return {
+      orderId: order._id,
+      timestamp: order.createdAt,
+      stacId: order.stacId,
+      refunded: order.refunded,
+      refund_status: order.refund_status,
+    };
+  }
+
+  async approveRefund(id: string) {
+    const order: Order = await this.findOne(id);
+    if (!order) throw new HttpException('Order not found', 400);
+    order.refunded = 'true';
+    order.refund_status = 'completed'; // should be an enum but idc
     await order.save();
     return {
       orderId: order._id,

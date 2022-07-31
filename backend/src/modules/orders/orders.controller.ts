@@ -38,6 +38,12 @@ export class OrdersController {
     return this.ordersService.performRefund(id);
   }
 
+  @Post('approve_refund/:id')
+  @UseGuards(SellerGaurd)
+  approveRefund(@Param('id') id: string) {
+    return this.ordersService.approveRefund(id);
+  }
+
   @Get('seller_refunded')
   @UseGuards(SellerGaurd)
   findRefundedBySeller(@Req() request) {
