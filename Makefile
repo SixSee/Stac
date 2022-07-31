@@ -18,6 +18,7 @@ deploycontracts:
 
 webapp:
 	cd ./frontend/client && \
+		npm i && \
 		npm start 
 	cd ../..
 
