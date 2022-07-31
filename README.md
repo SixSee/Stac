@@ -8,6 +8,13 @@ Our idea aims to solve the following in a cost efficient, and scalable way:
 3. Ensuring the goods are not swapped in between the supply chain, be it by the customer or by an
    employee
 
+### We have deployed all the stuff on a server
+[Backend](https://amazon-api.wantguns.dev)  
+[Swagger documentation for backend](https://amazon-api.wantguns.dev/api)  
+[Frontend](https://amazon-frontend.wantguns.dev)  
+[Mosquitto-Broker](https://mosquitto.wantguns.dev)  
+Microservice is deployed internally on server
+
 ## Deploy - Method 1
 ###### Before doing this step create ENV files for respective modules
 
@@ -28,8 +35,9 @@ make backend
 
 ## Env setup for different modules
 ### Frontend and Smart contract env variables
-```javascript
-
+frontend/client/.env
+```bash
+REACT_APP_BASE_URL=https://amazon-api.wantguns.dev/
 ```
 
 ### Backend env variables
