@@ -89,7 +89,7 @@ class MqttClient:
         headers = {"Content-Type": "application/json"}
         try:
             response = requests.request(
-                "POST", f'{Config.BACKEND_HOST}/physical_entries/', json=payload, headers=headers)
+                "POST", f'{Config.BACKEND_HOST}/stac/readings', json=payload, headers=headers)
             print(response.text)
         except Exception as e:
             print(e)
