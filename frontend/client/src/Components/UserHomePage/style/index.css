@@ -1,0 +1,25 @@
+#market-div{
+    /* height: 100vh; */
+    padding: 20px;
+    /* background:linear-gradient(0deg, rgba(76, 76, 76, 0.3), rgba(76, 76, 76, 0.3)),url(../../../images/amazon-3.jpg);
+    background-position: right;
+    background-attachment: fixed;
+    background-repeat: no-repeat; */
+    background-color: rgba(222, 222, 222, 0.542);
+    border-radius: 12px;
+    /* background-size: cover; */
+}
+#add-form{
+    /* height: 100vh; */
+    padding: 20px;
+    /* background:linear-gradient(0deg, rgba(76, 76, 76, 0.3), rgba(76, 76, 76, 0.3)),url(../../../images/amazon-3.jpg);
+    background-position: right;
+    background-attachment: fixed;
+    background-repeat: no-repeat; */
+    background-color: rgba(222, 222, 222, 0.542);
+    border-radius: 12px;
+    /* background-size: cover; */
+}
+.delete-item:hover{
+    cursor: pointer;
+}
