@@ -9,14 +9,17 @@ startblockchain:
 	cd ./frontend && \
 		npm i && \
 		npx hardhat node 
+	cd ..
 
 deploycontracts:
 	cd ./frontend && \
 		npx hardhat run scripts/deploy.js --network localhost
+	cd ..
 
 webapp:
 	cd ./frontend/client && \
 		npm start 
+	cd ..
 
 mongo:
 	sudo docker compose up -d
