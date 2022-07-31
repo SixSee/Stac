@@ -38,7 +38,7 @@ export const AuthContextProvider = ({ children }) => {
         setLoggedIn(false);
         setUser(null);
         localStorage.setItem("authtoken", null);
-        window.location.pathname = "/";
+        window.location.pathname = "/signup/seller";
         setIsLoading(false);
     };
 

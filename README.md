@@ -33,10 +33,15 @@ make microservice
 make backend
 ```
 ### Setup for Smart Contracts and WebApp
-#### Open a new terminal 
+#### Run each of these in new terminals
 ```bash
-make smartcontract
+make startblockchain
 ```
+
+```bash
+make deploycontracts
+```
+
 ```bash
 make webapp
 ```

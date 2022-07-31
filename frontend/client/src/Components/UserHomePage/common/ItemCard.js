@@ -103,11 +103,8 @@ export default function ItemCard({ item, sellerItem }) {
             },
             "body": JSON.stringify({ itemId: id })
         }).then(res => res.json())
-        console.log(createOrder.stacId);
-        // const placeOrderDetails = await contract.placeOrder(1, "Coffee", ethers.utils.parseEther("0.01"), "ke474rf", 1, 2, 3, 1234, {gasLimit: 3000000, value: ethers.utils.parseEther("0.01")} );
 
-        await placeOrder(createOrder.orderId, id, name, price.toString(), createOrder.stacId, 1, 2, 3, createOrder.timestamp);
-        console.log("asd")
+        await placeOrder(createOrder.orderId, id, name, price.toString(), createOrder.stacId, 1, 235, 35, createOrder.timestamp);
     }
 
     async function deleteItem({ id }) {
@@ -141,7 +138,7 @@ export default function ItemCard({ item, sellerItem }) {
                 </Typography>
             </CardContent>
             <CardActions>
-                {sellerItem ? <></> : <Button variant="contained" size="small">Buy Now</Button>}
+                {sellerItem ? <></> : <Button variant="contained" size="small" onClick={()=> buyOrder(item._id, item.name, item.price)}>Buy Now</Button>}
                 {/* <Button size="small">Learn More</Button> */}
             </CardActions >
         </Card >

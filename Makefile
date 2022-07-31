@@ -5,11 +5,14 @@ MAKEFLAGS += -j$(NPROCS)
 
 all: mongo backend microservice hardware smartcontract webapp
 
-smartcontract:
+startblockchain:
 	cd ./frontend && \
 		npm i && \
-		npx hardhat node && \
-		npx hardhat run scripts/deploy.js
+		npx hardhat node 
+
+deploycontracts:
+	cd ./frontend && \
+		npx hardhat run scripts/deploy.js --network localhost
 
 webapp:
 	cd ./frontend/client && \

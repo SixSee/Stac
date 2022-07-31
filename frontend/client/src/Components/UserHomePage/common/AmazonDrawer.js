@@ -32,8 +32,9 @@ import SavingsIcon from '@mui/icons-material/Savings';
 const drawerWidth = 240;
 
 function AmazonDrawer(props) {
+
   const { window } = props;
-  const { user, loggedIn } = React.useContext(AuthContext);
+  const { user, loggedIn, logout } = React.useContext(AuthContext);
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [currComponent, setCurrComponent] = React.useState(<Market />);
   let components;
@@ -85,7 +86,7 @@ function AmazonDrawer(props) {
         <ListItem key={'logout'} disablePadding >
           <ListItemButton>
             <ListItemIcon>
-              <LogoutIcon />
+              <LogoutIcon onClick={logout}/>
             </ListItemIcon>
             <ListItemText primary={'Logout'} />
           </ListItemButton>
