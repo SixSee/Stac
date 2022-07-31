@@ -8,8 +8,7 @@ export interface Item extends Document {
   buyer: string;
   description: string;
   price: string;
-  publicKey: string;
-  privateKey: string;
+  image_link: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -19,8 +18,7 @@ export const ItemEntity = new mongoose.Schema(
     name: { type: String },
     description: { type: String },
     price: { type: String },
-    publicKey: { type: String },
-    privateKey: { type: String },
+    image_link: { type: String },
   },
   { timestamps: true },
 );

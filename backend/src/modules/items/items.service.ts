@@ -34,6 +34,7 @@ export class ItemsService {
     item.name = updateItemDto.name;
     item.description = updateItemDto.description;
     item.price = updateItemDto.price;
+    item.image_link = updateItemDto.image_link;
     await item.save();
     throw new HttpException('Success', 200);
   }
