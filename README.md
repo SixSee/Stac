@@ -32,6 +32,14 @@ make microservice
 ```bash
 make backend
 ```
+### Setup for Smart Contracts and WebApp
+#### Open a new terminal 
+```bash
+make smartcontract
+```
+```bash
+make webapp
+```
 
 ## Env setup for different modules
 ### Frontend and Smart contract env variables

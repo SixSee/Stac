@@ -1,0 +1,29 @@
+version: "3.7"
+
+services:
+  mongo:
+    image: mongo
+    container_name: stac-db
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo:/data/db
+    environment:
+     # - MONGO_INITDB_ROOT_USERNAME=admin
+     # - MONGO_INITDB_ROOT_PASSWORD=admin
+     - MONGO_INITDB_DATABASE=stac
+
+  mongo-ui:
+    image: mongo-express
+    container_name: stac-mongo-ui
+    environment:
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: 'true'
+    ports:
+      - 5080:8081
+    depends_on: 
+      - mongo
+
+volumes:
+  mongo:
