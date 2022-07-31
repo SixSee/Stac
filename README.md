@@ -1,3 +1,36 @@
+# Standalone Repo for amazon hackathon
+## Stac
+Our idea aims to solve the following in a cost efficient, and scalable way:
+1. Identifying and tagging counterfeit products before it reaches the customer
+2. Tracking the possible damage to goods enroute. This happens in the both cases:
+   ◦ When a customer recieves the order
+   ◦ When a customer returns the order
+3. Ensuring the goods are not swapped in between the supply chain, be it by the customer or by an
+   employee
+
+## Deploy - Method 1
+###### Before doing this step create ENV files for respective modules
+
+### Setup for mongo and hardware
+```bash
+make mongo
+make hardware
+```
+### Setup for microservice and backend
+#### Open a new terminal to run microservice
+```bash
+make microservice
+```
+#### Open a new terminal to run backend
+```bash
+make backend
+```
+
+## Env setup for different modules
+### Frontend and Smart contract env variables
+```javascript
+
+```
 
 ### Backend env variables
 backend/.env
@@ -29,6 +62,13 @@ const char *MQTT_PASSWORD = "password for mqtt broker";
 char *MQTT_TOPIC = "/readings/1234abcd";
 const int MQTT_PORT = 1883;
 ```
+## Hardware Components
+1. NodeMCU
+2. ADXL335
+3. CD4051 (multiplexer)
+4. Jumper Cables
+##### Upload the build for hardware code using vscode extension PlatformIO to NodeMCU
+
 
 ## Backend run
 ```bash
@@ -44,3 +84,6 @@ source ./.venv/bin/activate
 pip install -r requirements.txt
 python microservice.py
 ```
+
+
+
