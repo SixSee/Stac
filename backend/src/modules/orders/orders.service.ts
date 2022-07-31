@@ -66,7 +66,7 @@ export class OrdersService {
   // Returns a list of refund items belonging to the seller
   findRefundedBySeller(user) {
     return this.order
-      .find({ seller: user.id, refunded: "true" })
+      .find({ seller: user.id, refunded: 'true' })
       .populate('buyer')
       .populate('seller')
       .populate('itemId');
@@ -74,7 +74,7 @@ export class OrdersService {
 
   async performRefund(id: string) {
     const order: Order = await this.findOne(id);
-    if (!order) throw new HttpException('Order not found', 400);
+    if (!order) throw new HttpException('Order not found', 404);
     order.refunded = 'initiated';
     order.refund_status = 'started'; // should be an enum but idc
     await order.save();
