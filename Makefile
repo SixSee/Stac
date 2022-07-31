@@ -19,7 +19,7 @@ deploycontracts:
 webapp:
 	cd ./frontend/client && \
 		npm start 
-	cd ..
+	cd ../..
 
 mongo:
 	sudo docker compose up -d
