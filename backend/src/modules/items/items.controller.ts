@@ -59,7 +59,6 @@ export class ItemsController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     createItemDto.image_link = `/uploads/${file.filename}`;
-    console.log(createItemDto);
     return this.itemsService.create(createItemDto, request.user);
   }
   @Get('/seller')

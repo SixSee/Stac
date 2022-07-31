@@ -23,7 +23,7 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Post()
-  @UseGuards(SellerGaurd)
+  @UseGuards(CommonGaurd)
   create(@Body() createOrderDto: CreateOrderDto, @Req() request) {
     return this.ordersService.create(createOrderDto, request.user);
   }
