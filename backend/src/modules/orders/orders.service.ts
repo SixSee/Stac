@@ -22,7 +22,7 @@ export class OrdersService {
     newOrder.buyer = user.id;
     newOrder.stacId = await this.getNewStacId();
     //TODO-> code to generate qr_code
-    newOrder.refunded = "false";
+    newOrder.refunded = 'false';
     await newOrder.save();
     item.quantity -= 1;
     await item.save();
@@ -57,7 +57,7 @@ export class OrdersService {
   // Returns a list of refund items belonging to the buyer
   findRefundedByBuyer(user) {
     return this.order
-      .find({ buyer: user.id, refunded: "true" })
+      .find({ buyer: user.id, refunded: 'true' })
       .populate('buyer')
       .populate('seller')
       .populate('itemId');
@@ -75,8 +75,8 @@ export class OrdersService {
   async performRefund(id: string) {
     const order: Order = await this.findOne(id);
     if (!order) throw new HttpException('Order not found', 400);
-    order.refunded = "true";
-    order.refund_status = "started"; // should be an enum but idc
+    order.refunded = 'true';
+    order.refund_status = 'started'; // should be an enum but idc
     await order.save();
     return {
       orderId: order._id,

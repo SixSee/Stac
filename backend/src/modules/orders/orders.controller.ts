@@ -32,18 +32,6 @@ export class OrdersController {
     return this.ordersService.findAll();
   }
 
-  @Get('buyer_list')
-  @UseGuards(BuyerGaurd)
-  findAllByBuyer(@Req() request) {
-    return this.ordersService.findAllByBuyer(request.user);
-  }
-
-  @Get(':id')
-  @UseGuards(CommonGaurd)
-  findOne(@Param('id') id: string) {
-    return this.ordersService.findOne(id);
-  }
-
   @Post('refund/:id')
   @UseGuards(CommonGaurd)
   performRefund(@Param('id') id: string) {
@@ -60,6 +48,18 @@ export class OrdersController {
   @UseGuards(BuyerGaurd)
   findRefundedByBuyer(@Req() request) {
     return this.ordersService.findRefundedByBuyer(request.user);
+  }
+
+  @Get('buyer_list')
+  @UseGuards(BuyerGaurd)
+  findAllByBuyer(@Req() request) {
+    return this.ordersService.findAllByBuyer(request.user);
+  }
+
+  @Get(':id')
+  @UseGuards(CommonGaurd)
+  findOne(@Param('id') id: string) {
+    return this.ordersService.findOne(id);
   }
 
   @Delete(':id')
