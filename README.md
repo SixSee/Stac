@@ -15,37 +15,6 @@ Our idea aims to solve the following in a cost efficient, and scalable way:
 [Mosquitto-Broker](https://mosquitto.wantguns.dev)  
 Microservice is deployed internally on server
 
-## Deploy - Method 1
-###### Before doing this step create ENV files for respective modules
-
-### Setup for mongo and hardware
-```bash
-make mongo
-make hardware
-```
-### Setup for microservice and backend
-#### Open a new terminal to run microservice
-```bash
-make microservice
-```
-#### Open a new terminal to run backend
-```bash
-make backend
-```
-### Setup for Smart Contracts and WebApp
-#### Run each of these in new terminals
-```bash
-make startblockchain
-```
-
-```bash
-make deploycontracts
-```
-
-```bash
-make webapp
-```
-
 ## Env setup for different modules
 ### Frontend and Smart contract env variables
 frontend/client/.env
@@ -89,6 +58,45 @@ const int MQTT_PORT = 1883;
 3. CD4051 (multiplexer)
 4. Jumper Cables
 ##### Upload the build for hardware code using vscode extension PlatformIO to NodeMCU
+
+## Setup Metamask Configuration
+
+- Set the Metamask configuration as given in the following image:
+
+![Metamask Config](https://bin.wantguns.dev/NcqbEQ.png)
+
+## Deploy - Method 1
+###### Before doing this step create ENV files for respective modules
+
+### Setup for mongo and hardware
+```bash
+make mongo
+make hardware
+```
+### Setup for microservice and backend
+#### Open a new terminal to run microservice
+```bash
+make microservice
+```
+#### Open a new terminal to run backend
+```bash
+make backend
+```
+### Setup for Smart Contracts and WebApp
+#### Run each of these in new terminals
+```bash
+make startblockchain
+```
+
+```bash
+make deploycontracts
+```
+
+```bash
+make webapp
+```
+
+## Deploy - Method 2
 
 ## Frontend and Smart Contract run
 #### Smart Contract deploy
