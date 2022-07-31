@@ -45,7 +45,7 @@ function App() {
                         </AuthenticatedRoute>
                     }
                 />
-                <Route exact path="*" element={<Navigate to="/home" />} />
+                <Route exact path="*" element={<Navigate to="/login" />} />
             </Routes>
         </BrowserRouter >
 
