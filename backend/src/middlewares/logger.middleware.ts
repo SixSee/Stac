@@ -15,6 +15,7 @@ export class LoggerMiddleware implements NestMiddleware {
       const diff = process.hrtime(startAt);
       const responseTime = (diff[0] * 1e3 + diff[1] * 1e-6).toString();
       console.log(
+        '\x1b[36m',
         `${method} ${originalUrl} ${statusCode}`,
         `${responseTime.slice(0, 4)}ms - ${userAgent} ${ip}`,
       );
