@@ -6,6 +6,7 @@ import { Document } from 'mongoose';
 export interface User extends Document {
   fullName: string;
   username: string;
+  walletAddress: string;
   password: string;
   role: string;
   isDeleted: boolean;
@@ -19,6 +20,7 @@ export enum UserRole {
 export const UserEntity = new mongoose.Schema(
   {
     fullName: { type: String },
+    walletAddress: { type: String },
     username: { type: String, required: true, unique: true },
     password: { type: String },
     role: { type: String, enum: UserRole },

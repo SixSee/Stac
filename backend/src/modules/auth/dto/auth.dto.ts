@@ -11,6 +11,9 @@ export class UserDTO {
   fullName: string;
 
   @ApiProperty()
+  walletAddress: string;
+
+  @ApiProperty()
   @IsNotEmpty()
   password: string;
 }
