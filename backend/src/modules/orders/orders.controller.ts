@@ -6,12 +6,10 @@ import {
   Param,
   Delete,
   UseGuards,
-  Put,
   Req,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { CommonGaurd } from '../../gaurds/common.gaurd';
 import { SellerGaurd } from '../../gaurds/seller.gaurd';
