@@ -44,6 +44,18 @@ export class OrdersController {
     return this.ordersService.findOne(id);
   }
 
+  @Post('refund/:id')
+  @UseGuards(CommonGaurd)
+  performRefund(@Param('id') id: string) {
+    return this.ordersService.performRefund(id);
+  }
+
+  @Get('refunded_list')
+  @UseGuards(BuyerGaurd)
+  findRefundedByBuyer(@Req() request) {
+    return this.ordersService.findRefundedByBuyer(request.user);
+  }
+
   @Delete(':id')
   @UseGuards(SellerGaurd)
   remove(@Param('id') id: string) {

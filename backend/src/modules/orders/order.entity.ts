@@ -10,6 +10,8 @@ export interface Order extends Document {
   stacId: string;
   qr_code: string;
   status: string;
+  refunded: string;
+  refund_status: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -21,6 +23,8 @@ export const OrderEntity = new mongoose.Schema(
     seller: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     itemId: { type: mongoose.Schema.Types.ObjectId, ref: 'Item' },
     qr_code: { type: String },
+    refunded: { type: String },
+    refund_status: { type: String },
     stacId: { type: String },
     status: { type: String, enum: OrderStatus },
   },
