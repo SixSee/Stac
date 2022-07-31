@@ -77,12 +77,16 @@ const int MQTT_PORT = 1883;
 4. Jumper Cables
 ##### Upload the build for hardware code using vscode extension PlatformIO to NodeMCU
 
-## Frontend run
+## Frontend and Smart Contract run
+#### Smart Contract deploy
 ```bash
 cd ./frontend
 npm i
-npx hardhat node
+npx hardhat node 
 npx hardhat run scripts/deploy.js
+```
+#### Web App start
+```bash
 cd ./client/
 npm start
 ```
