@@ -16,6 +16,7 @@ import { UserDTO, UserLoginDto } from './dto/auth.dto';
 import { BuyerGaurd } from '../../gaurds/buyer.gaurd';
 import { UserRole } from './auth.entity';
 import { ApiTags } from '@nestjs/swagger';
+import {CommonGaurd} from "../../gaurds/common.gaurd";
 
 @Controller('auth')
 @ApiTags('auth')
@@ -45,10 +46,11 @@ export class AuthController {
   //   return this.authService.findAll();
   // }
   //
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.authService.findOne(+id);
-  // }
+  @Get('/user')
+  @UseGuards(CommonGaurd)
+  findOne(@Req() request) {
+    return this.authService.findOne(request.user);
+  }
   //
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateAuthDto) {

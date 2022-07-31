@@ -48,8 +48,8 @@ export class AuthService {
     return `This action returns all auth`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
+  findOne(user) {
+    return this.user.findOne({ _id: user.id });
   }
 
   update(id: number, updateAuthDto) {
