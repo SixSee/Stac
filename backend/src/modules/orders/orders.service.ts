@@ -54,9 +54,19 @@ export class OrdersService {
       .populate('refund_status');
   }
 
+  // Returns a list of refund items belonging to the buyer
   findRefundedByBuyer(user) {
     return this.order
       .find({ buyer: user.id, refunded: "true" })
+      .populate('buyer')
+      .populate('seller')
+      .populate('itemId');
+  }
+
+  // Returns a list of refund items belonging to the seller
+  findRefundedBySeller(user) {
+    return this.order
+      .find({ seller: user.id, refunded: "true" })
       .populate('buyer')
       .populate('seller')
       .populate('itemId');

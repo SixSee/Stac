@@ -50,7 +50,13 @@ export class OrdersController {
     return this.ordersService.performRefund(id);
   }
 
-  @Get('refunded_list')
+  @Get('seller_refunded')
+  @UseGuards(SellerGaurd)
+  findRefundedBySeller(@Req() request) {
+    return this.ordersService.findRefundedBySeller(request.user);
+  }
+
+  @Get('buyer_refunded')
   @UseGuards(BuyerGaurd)
   findRefundedByBuyer(@Req() request) {
     return this.ordersService.findRefundedByBuyer(request.user);
