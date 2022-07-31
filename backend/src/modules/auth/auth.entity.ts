@@ -8,8 +8,6 @@ export interface User extends Document {
   username: string;
   password: string;
   role: string;
-  publicKey: string;
-  privateKey: string;
   isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
@@ -24,8 +22,6 @@ export const UserEntity = new mongoose.Schema(
     username: { type: String, required: true, unique: true },
     password: { type: String },
     role: { type: String, enum: UserRole },
-    publicKey: { type: String },
-    privateKey: { type: String },
     isDeleted: { type: Boolean, default: false },
     deletedAt: { type: Date },
   },

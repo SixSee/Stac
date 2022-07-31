@@ -17,7 +17,6 @@ export class AuthService {
     if (role === UserRole.BUYER) {
       const newAccount = new this.user(createAuthDto);
       newAccount.role = UserRole.BUYER;
-      // code to generate public and private key for user
       await newAccount.save();
     } else {
       const newAccount = new this.user(createAuthDto);
