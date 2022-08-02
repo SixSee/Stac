@@ -1,16 +1,19 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { CreateOrderDto } from './dto/create-order.dto';
+import { CreateOrderDto, VerifyOrderDto } from './dto/create-order.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Order } from './order.entity';
 import { ItemsService } from '../items/items.service';
 import { Item } from '../items/item.entity';
+import { AuthService } from '../auth/auth.service';
+import { ethers } from 'ethers';
 
 @Injectable()
 export class OrdersService {
   constructor(
     @InjectModel('Order') private order: Model<Order>,
     private readonly itemService: ItemsService,
+    private readonly userService: AuthService,
   ) {}
 
   async create(createOrderDto: CreateOrderDto, user) {
@@ -39,6 +42,14 @@ export class OrdersService {
     order.transactionApproved = true;
     await order.save();
     return { signing_message: `${order.stacId}:${order.buyer}` };
+  }
+
+  async storeSignedMessage(id: string, signedMessage: string) {
+    const order: Order = await this.findOne(id);
+    if (!order) throw new HttpException('Order not found', 404);
+    order.signedMessage = signedMessage;
+    await order.save();
+    throw new HttpException('Success', 200);
   }
 
   async getNewStacId(): Promise<string> {
@@ -96,6 +107,27 @@ export class OrdersService {
       .populate('buyer')
       .populate('seller')
       .populate('itemId');
+  }
+
+  async verifyStacIdAndUser(orderId: string, verifyDTO: VerifyOrderDto) {
+    const order: Order = await this.findOne(orderId);
+    if (!order) throw new HttpException('Order not found', 404);
+    const jwt_user = await this.userService.verifyUnameAndPasswd(
+      verifyDTO.username,
+      verifyDTO.password,
+    );
+    if (order.signedMessage != verifyDTO.token)
+      throw new HttpException('Wrong Token, Cheating...', 400);
+    //Verify signed message using etherJs
+
+    return {
+      accessToken: jwt_user.jwtToken,
+      user: {
+        name: jwt_user.user.fullName,
+        username: jwt_user.user.username,
+        role: jwt_user.user.role,
+      },
+    };
   }
 
   async performRefund(id: string) {

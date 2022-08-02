@@ -8,6 +8,7 @@ export interface Order extends Document {
   seller: string;
   itemId: string;
   stacId: string;
+  signedMessage: string;
   qr_code: string;
   transactionApproved: boolean;
   status: string;

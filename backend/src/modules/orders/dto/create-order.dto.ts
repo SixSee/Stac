@@ -7,3 +7,20 @@ export class CreateOrderDto {
   @IsString()
   itemId: string;
 }
+
+export class VerifyOrderDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  username: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  password: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  token: string;
+}
