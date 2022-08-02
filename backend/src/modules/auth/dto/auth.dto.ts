@@ -11,6 +11,8 @@ export class UserDTO {
   fullName: string;
 
   @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
   walletAddress: string;
 
   @ApiProperty()
@@ -22,6 +24,11 @@ export class UserLoginDto {
   @ApiProperty()
   @IsNotEmpty()
   username: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  walletAddress: string;
 
   @ApiProperty()
   @IsNotEmpty()

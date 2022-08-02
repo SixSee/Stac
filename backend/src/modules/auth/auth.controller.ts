@@ -13,7 +13,6 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserDTO, UserLoginDto } from './dto/auth.dto';
-import { BuyerGaurd } from '../../gaurds/buyer.gaurd';
 import { UserRole } from './auth.entity';
 import { ApiTags } from '@nestjs/swagger';
 import { CommonGaurd } from '../../gaurds/common.gaurd';

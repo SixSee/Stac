@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import * as express from 'express';
 import { join } from 'path';
+declare const module: any;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -29,6 +30,10 @@ async function bootstrap() {
 
   // Enable Pipes
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen(8000);
+  await app.listen(8000, '0.0.0.0');
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.dispose(() => app.close());
+  }
 }
 bootstrap();

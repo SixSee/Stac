@@ -31,17 +31,17 @@ export class AuthService {
     if (!user) throw new HttpException('Email not registered', 400);
     if (!(await checkPasswd(user.password, loginDto.password)))
       throw new HttpException('Incorrect Password', 401);
-    else {
-      const jwtToken = this.createToken({
-        id: user.id,
-        username: user.username,
-        role: user.role,
-      });
-      return {
-        accessToken: jwtToken,
-        user: { name: user.fullName, username: user.username, role: user.role },
-      };
-    }
+    if (user.walletAddress != loginDto.walletAddress)
+      throw new HttpException('Wallet Address does not match', 401);
+    const jwtToken = this.createToken({
+      id: user.id,
+      username: user.username,
+      role: user.role,
+    });
+    return {
+      accessToken: jwtToken,
+      user: { name: user.fullName, username: user.username, role: user.role },
+    };
   }
 
   findAll() {
