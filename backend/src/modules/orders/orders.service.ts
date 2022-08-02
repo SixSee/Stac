@@ -1,16 +1,19 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { CreateOrderDto } from './dto/create-order.dto';
+import { CreateOrderDto, VerifyOrderDto } from './dto/create-order.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Order } from './order.entity';
 import { ItemsService } from '../items/items.service';
 import { Item } from '../items/item.entity';
+import { AuthService } from '../auth/auth.service';
+import { ethers } from 'ethers';
 
 @Injectable()
 export class OrdersService {
   constructor(
     @InjectModel('Order') private order: Model<Order>,
     private readonly itemService: ItemsService,
+    private readonly userService: AuthService,
   ) {}
 
   async create(createOrderDto: CreateOrderDto, user) {
@@ -33,6 +36,22 @@ export class OrdersService {
     };
   }
 
+  async approveTransaction(id: string) {
+    const order: Order = await this.findOne(id);
+    if (!order) throw new HttpException('Order not found', 404);
+    order.transactionApproved = true;
+    await order.save();
+    return { signing_message: this.createSignMessage(order) };
+  }
+
+  async storeSignedMessage(id: string, signedMessage: string) {
+    const order: Order = await this.findOne(id);
+    if (!order) throw new HttpException('Order not found', 404);
+    order.signedMessage = signedMessage;
+    await order.save();
+    throw new HttpException('Success', 200);
+  }
+
   async getNewStacId(): Promise<string> {
     return '12345abcde';
   }
@@ -47,11 +66,18 @@ export class OrdersService {
 
   findAllByBuyer(user) {
     return this.order
-      .find({ buyer: user.id })
+      .find({ buyer: user.id, transactionApproved: true })
       .populate('buyer')
       .populate('seller')
-      .populate('itemId')
-      .populate('refund_status');
+      .populate('itemId');
+  }
+
+  findAllBySeller(user) {
+    return this.order
+      .find({ seller: user.id, transactionApproved: true })
+      .populate('buyer')
+      .populate('seller')
+      .populate('itemId');
   }
 
   // Returns a list of refund items belonging to the buyer
@@ -88,6 +114,32 @@ export class OrdersService {
       .populate('buyer')
       .populate('seller')
       .populate('itemId');
+  }
+
+  async verifyStacIdAndUser(orderId: string, verifyDTO: VerifyOrderDto) {
+    const order: Order = await this.findOne(orderId);
+    if (!order) throw new HttpException('Order not found', 404);
+    const jwt_user = await this.userService.verifyUnameAndPasswd(
+      verifyDTO.username,
+      verifyDTO.password,
+    );
+    if (order.signedMessage != verifyDTO.token)
+      throw new HttpException('Wrong Token, Cheating...', 400);
+    //Verify signed message using etherJs
+    const userWalletAddress = ethers.utils.verifyMessage(
+      this.createSignMessage(order),
+      verifyDTO.token,
+    );
+    if (userWalletAddress != jwt_user.user.walletAddress)
+      throw new HttpException('Wrong Token, Cheating...', 400);
+    return {
+      accessToken: jwt_user.jwtToken,
+      user: {
+        name: jwt_user.user.fullName,
+        username: jwt_user.user.username,
+        role: jwt_user.user.role,
+      },
+    };
   }
 
   async performRefund(id: string) {
@@ -131,5 +183,11 @@ export class OrdersService {
   async remove(id: string) {
     await this.order.deleteOne({ _id: id });
     throw new HttpException('Success', 200);
+  }
+
+  createSignMessage(order: Order) {
+    const itemId = order.itemId['_id'];
+    const buyer = order.buyer['_id'];
+    return `${order.stacId}:${itemId}:${buyer}`;
   }
 }

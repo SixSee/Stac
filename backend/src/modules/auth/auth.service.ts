@@ -28,20 +28,20 @@ export class AuthService {
 
   async login(loginDto: UserLoginDto) {
     const user: User = await this.user.findOne({ username: loginDto.username });
-    if (!user) throw new HttpException('Email not registered', 400);
+    if (!user) throw new HttpException('User not registered', 400);
     if (!(await checkPasswd(user.password, loginDto.password)))
       throw new HttpException('Incorrect Password', 401);
-    else {
-      const jwtToken = this.createToken({
-        id: user.id,
-        username: user.username,
-        role: user.role,
-      });
-      return {
-        accessToken: jwtToken,
-        user: { name: user.fullName, username: user.username, role: user.role },
-      };
-    }
+    if (user.walletAddress != loginDto.walletAddress)
+      throw new HttpException('Wallet Address does not match', 401);
+    const jwtToken = this.createToken({
+      id: user.id,
+      username: user.username,
+      role: user.role,
+    });
+    return {
+      accessToken: jwtToken,
+      user: { name: user.fullName, username: user.username, role: user.role },
+    };
   }
 
   findAll() {
@@ -69,6 +69,20 @@ export class AuthService {
       'id fullName username role',
     );
     return !user ? null : this.sanitizeAdmin(user);
+  }
+
+  async verifyUnameAndPasswd(username: string, password: string) {
+    const user: User = await this.user.findOne({ username: username });
+    if (!user) throw new HttpException('User not registered', 400);
+
+    if (!(await checkPasswd(user.password, password)))
+      throw new HttpException('Incorrect Password', 401);
+    const jwtToken = this.createToken({
+      id: user.id,
+      username: user.username,
+      role: user.role,
+    });
+    return { jwtToken: jwtToken, user: user };
   }
 
   createToken(payload) {

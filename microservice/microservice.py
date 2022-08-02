@@ -32,6 +32,7 @@ class MqttClient:
         self.topic = Config.MQTT_TOPIC
         self.username = Config.MQTT_USERNAME
         self.password = Config.MQTT_PASSWORD
+        self.previous_y_axis = 0
 
     def run(self):
         self.connect_to_broker()
@@ -66,6 +67,10 @@ class MqttClient:
         if (not z_axis) or (not y_axis) or (not z_axis):
             print("Improper data format... ")
             return
+#         if x_axis > 700 or abs(self.previous_y_axis - y_axis) > 90 and z_axis > 550:
+#             print(f"Fault readings... {x_axis}, {y_axis}, {z_axis}")
+#         else:
+
         current_time = payload.get('current_time', None)
         print(
             f"Received readings from device {device_id} on {current_time}")

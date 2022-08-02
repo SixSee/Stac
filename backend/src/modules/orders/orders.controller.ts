@@ -9,7 +9,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
-import { CreateOrderDto } from './dto/create-order.dto';
+import { CreateOrderDto, VerifyOrderDto } from './dto/create-order.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { CommonGaurd } from '../../gaurds/common.gaurd';
 import { SellerGaurd } from '../../gaurds/seller.gaurd';
@@ -26,22 +26,27 @@ export class OrdersController {
     return this.ordersService.create(createOrderDto, request.user);
   }
 
-  @Get()
+  @Post('/approve-transaction/:id')
   @UseGuards(CommonGaurd)
-  findAll() {
-    return this.ordersService.findAll();
+  approveTransaction(@Param('id') id: string) {
+    return this.ordersService.approveTransaction(id);
   }
 
-  @Post('refund/:id')
-  @UseGuards(CommonGaurd)
-  performRefund(@Param('id') id: string) {
-    return this.ordersService.performRefund(id);
+  @Post('/signed_message/:id')
+  @UseGuards(BuyerGaurd)
+  storeSignedMessage(@Param('id') id: string, @Req() request) {
+    return this.ordersService.storeSignedMessage(
+      id,
+      request.data['signedMessage'],
+    );
   }
 
-  @Post('approve_refund/:id')
-  @UseGuards(SellerGaurd)
-  approveRefund(@Param('id') id: string) {
-    return this.ordersService.approveRefund(id);
+  @Post('verify/:id')
+  loginAndVerifyStacId(
+    @Param('id') id: string,
+    @Body() verifyStacId: VerifyOrderDto,
+  ) {
+    return this.ordersService.verifyStacIdAndUser(id, verifyStacId);
   }
 
   @Get('seller_refunded')
@@ -68,10 +73,28 @@ export class OrdersController {
     return this.ordersService.findRefundedByBuyer(request.user);
   }
 
-  @Get('buyer_list')
+  @Get('/buyer')
   @UseGuards(BuyerGaurd)
   findAllByBuyer(@Req() request) {
     return this.ordersService.findAllByBuyer(request.user);
+  }
+
+  @Get('/seller')
+  @UseGuards(BuyerGaurd)
+  findAllBySeller(@Req() request) {
+    return this.ordersService.findAllBySeller(request.user);
+  }
+
+  @Post('refund/:id')
+  @UseGuards(CommonGaurd)
+  performRefund(@Param('id') id: string) {
+    return this.ordersService.performRefund(id);
+  }
+
+  @Post('approve_refund/:id')
+  @UseGuards(SellerGaurd)
+  approveRefund(@Param('id') id: string) {
+    return this.ordersService.approveRefund(id);
   }
 
   @Get(':id')

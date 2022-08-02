@@ -8,7 +8,9 @@ export interface Order extends Document {
   seller: string;
   itemId: string;
   stacId: string;
+  signedMessage: string;
   qr_code: string;
+  transactionApproved: boolean;
   status: string;
   refunded: string;
   refund_status: string;
@@ -22,6 +24,7 @@ export const OrderEntity = new mongoose.Schema(
     buyer: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     seller: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     itemId: { type: mongoose.Schema.Types.ObjectId, ref: 'Item' },
+    transactionApproved: { type: Boolean, default: false },
     qr_code: { type: String },
     refunded: { type: String },
     refund_status: { type: String },
