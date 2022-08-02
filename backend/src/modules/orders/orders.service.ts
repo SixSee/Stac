@@ -33,6 +33,14 @@ export class OrdersService {
     };
   }
 
+  async approveTransaction(id: string) {
+    const order: Order = await this.findOne(id);
+    if (!order) throw new HttpException('Order not found', 404);
+    order.transactionApproved = true;
+    await order.save();
+    return { signing_message: `${order.stacId}:${order.buyer}` };
+  }
+
   async getNewStacId(): Promise<string> {
     return '12345abcde';
   }

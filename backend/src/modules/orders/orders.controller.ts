@@ -32,6 +32,12 @@ export class OrdersController {
     return this.ordersService.findAll();
   }
 
+  @Post('/approve-transaction/:id')
+  @UseGuards(CommonGaurd)
+  approveTransaction(@Param('id') id: string) {
+    return this.ordersService.approveTransaction(id);
+  }
+
   @Post('refund/:id')
   @UseGuards(CommonGaurd)
   performRefund(@Param('id') id: string) {
