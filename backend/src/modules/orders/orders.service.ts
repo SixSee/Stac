@@ -41,7 +41,7 @@ export class OrdersService {
     if (!order) throw new HttpException('Order not found', 404);
     order.transactionApproved = true;
     await order.save();
-    return { signing_message: `${order.stacId}:${order.buyer}` };
+    return { signing_message: this.createSignMessage(order) };
   }
 
   async storeSignedMessage(id: string, signedMessage: string) {
@@ -66,11 +66,18 @@ export class OrdersService {
 
   findAllByBuyer(user) {
     return this.order
-      .find({ buyer: user.id })
+      .find({ buyer: user.id, transactionApproved: true })
       .populate('buyer')
       .populate('seller')
-      .populate('itemId')
-      .populate('refund_status');
+      .populate('itemId');
+  }
+
+  findAllBySeller(user) {
+    return this.order
+      .find({ seller: user.id, transactionApproved: true })
+      .populate('buyer')
+      .populate('seller')
+      .populate('itemId');
   }
 
   // Returns a list of refund items belonging to the buyer
@@ -119,7 +126,12 @@ export class OrdersService {
     if (order.signedMessage != verifyDTO.token)
       throw new HttpException('Wrong Token, Cheating...', 400);
     //Verify signed message using etherJs
-
+    const userWalletAddress = ethers.utils.verifyMessage(
+      this.createSignMessage(order),
+      verifyDTO.token,
+    );
+    if (userWalletAddress != jwt_user.user.walletAddress)
+      throw new HttpException('Wrong Token, Cheating...', 400);
     return {
       accessToken: jwt_user.jwtToken,
       user: {
@@ -171,5 +183,11 @@ export class OrdersService {
   async remove(id: string) {
     await this.order.deleteOne({ _id: id });
     throw new HttpException('Success', 200);
+  }
+
+  createSignMessage(order: Order) {
+    const itemId = order.itemId['_id'];
+    const buyer = order.buyer['_id'];
+    return `${order.stacId}:${itemId}:${buyer}`;
   }
 }

@@ -26,12 +26,6 @@ export class OrdersController {
     return this.ordersService.create(createOrderDto, request.user);
   }
 
-  @Get()
-  @UseGuards(CommonGaurd)
-  findAll() {
-    return this.ordersService.findAll();
-  }
-
   @Post('/approve-transaction/:id')
   @UseGuards(CommonGaurd)
   approveTransaction(@Param('id') id: string) {
@@ -79,10 +73,16 @@ export class OrdersController {
     return this.ordersService.findRefundedByBuyer(request.user);
   }
 
-  @Get('buyer_list')
+  @Get('/buyer')
   @UseGuards(BuyerGaurd)
   findAllByBuyer(@Req() request) {
     return this.ordersService.findAllByBuyer(request.user);
+  }
+
+  @Get('/seller')
+  @UseGuards(BuyerGaurd)
+  findAllBySeller(@Req() request) {
+    return this.ordersService.findAllBySeller(request.user);
   }
 
   @Post('refund/:id')
