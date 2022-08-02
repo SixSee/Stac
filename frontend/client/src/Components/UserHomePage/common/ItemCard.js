@@ -36,8 +36,34 @@ export default function ItemCard({ item, sellerItem }) {
             console.log(placeOrderDetails);
             setSuccessSnackbarMessage("Order Placed")
             handleClickSuccess();
+            const signing_message = await fetch(`${process.env.REACT_APP_BASE_URL}/order/approve-transaction/${_orderId}`, {
+                'method': "POST",
+                headers: {
+                    "x-access-token": localStorage.getItem("authtoken"),
+                },
+            })
+                .then(res=> res.json());
+            // console.log(signing_message.signing_message);
+
+            const signed_message = await signer.signMessage(signing_message.signing_message)
+                .then(res=> (res))
+                .catch(err=> err);
+            // console.log(signed_message);
+            // console.log("dsd")
+            // const x  = ethers.utils.verifyMessage(signing_message.signing_message, signed_message);
+            // console.log(x);
+
+            await fetch(`${process.env.REACT_APP_BASE_URL}/order/signed_message/${_orderId}`, {
+                'method': "POST",
+                headers: {
+                    "x-access-token": localStorage.getItem("authtoken"),
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify({signedMessage: signed_message})
+            });
         }
         catch (err) {
+            console.log("pp")
             setErrorSnackbarMessage(err.message);
             handleClickError();
         }

@@ -47,6 +47,7 @@ export default function LoginPage() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [metamaskAccount, setMetamaskAccount] = useState('None');
 
     const [open, setOpen] = useState(false);
 
@@ -72,32 +73,47 @@ export default function LoginPage() {
     }
 
 
+    window.ethereum.on('accountsChanged', function (accounts) {
+        setMetamaskAccount(accounts[0]);
+    });
+
+
     const loginUser=()=>{
-        fetch(`${process.env.REACT_APP_BASE_URL}/auth/login/`, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ username: email, password: password })
-        })
-            .then((res) => {
-                if(!res.ok){
-                    const err = new Error("Error");
-                    err.response = res;
-                    throw err.response.json();
-                }
-                return res.json();
+
+        if (window.ethereum) {
+            // res[0] for fetching a first wallet
+            window.ethereum
+                .request({method: "eth_requestAccounts"})
+                .then((res) => setMetamaskAccount(res[0]));
+            fetch(`${process.env.REACT_APP_BASE_URL}/auth/login/`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({username: email, password: password, walletAddress: metamaskAccount})
             })
-            .then((data)=> {
-                localStorage.setItem("authtoken", data.accessToken);
-            })
-            .then(()=> window.location.pathname= "/home")
-            .catch((err)=>{
-                setOpen(true);
-                err.then((data)=> {
-                    setLoginError(data.message);
+                .then((res) => {
+                    if (!res.ok) {
+                        const err = new Error("Error");
+                        err.response = res;
+                        throw err.response.json();
+                    }
+                    return res.json();
+                })
+                .then((data) => {
+                    localStorage.setItem("authtoken", data.accessToken);
+                })
+                .then(() => window.location.pathname = "/home")
+                .catch((err) => {
+                    setOpen(true);
+                    err.then((data) => {
+                        setLoginError(data.message);
+                    });
                 });
-            });
+        }
+        else {
+            setLoginError("Install metamask extension!!");
+        }
     }
 
     const handleSubmit = (event) => {

@@ -12,6 +12,7 @@ import {useContext, useEffect, useState} from "react";
 import {Snackbar, Stack} from "@mui/material";
 import MuiAlert from '@mui/material/Alert';
 import {AuthContext} from "../../context/Authcontext";
+import Card from "@mui/material/Card";
 
 function Copyright(props) {
     return (
@@ -42,6 +43,11 @@ export default function SignUpPageSeller() {
         }
     },[]);
 
+    window.ethereum.on('accountsChanged', function (accounts) {
+        setMetamaskAccount(accounts[0]);
+    });
+
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -53,6 +59,7 @@ export default function SignUpPageSeller() {
     const [lastname, setLastName] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [metamaskAccount, setMetamaskAccount] = useState('');
 
     const [open, setOpen] = useState(false);
     const [loginError, setLoginError] = useState('');
@@ -76,44 +83,53 @@ export default function SignUpPageSeller() {
         );
     }
 
-
     const signUp= () => {
-        if(confirmPassword!==password){
-            setOpen(true);
-            setLoginError("Both Password Don't Match");
-        }
-        else{
-            fetch(`${process.env.REACT_APP_BASE_URL}/auth/seller/signup/`, {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ "username": email, "password": password, "fullName": firstname})
-            })
-                .then((res) => {
-                    if(!res.ok){
-                        const err = new Error("Error");
-                        err.response = res;
-                        throw err.response.json();
-                    }
-                    return res.json();
-                })
-                .catch((err)=>{
-                    setOpen(true);
-                    err.then((data)=> {
-                        console.log(data)
-                        if(data.payload && data.payload.password){
-                            setLoginError(data.payload.password);
-                        }else{
-                            if(data.payload && data.payload.email){
-                                setLoginError(data.payload.email);
-                            }else{
-                                setLoginError(data.message);
-                            }
-                        }
 
+        if (window.ethereum) {
+            // res[0] for fetching a first wallet
+            window.ethereum
+                .request({method: "eth_requestAccounts"})
+                .then((res) => setMetamaskAccount(res[0]));
+            if (confirmPassword !== password) {
+                setOpen(true);
+                setLoginError("Both Password Don't Match");
+            } else {
+                console.log(metamaskAccount);
+                fetch(`${process.env.REACT_APP_BASE_URL}/auth/seller/signup/`, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({"username": email, "password": password, "fullName": firstname, "walletAddress": metamaskAccount})
+                })
+                    .then((res) => {
+                        if (!res.ok) {
+                            const err = new Error("Error");
+                            err.response = res;
+                            throw err.response.json();
+                        }
+                        return res.json();
+                    })
+                    .catch((err) => {
+                        setOpen(true);
+                        err.then((data) => {
+                            console.log(data)
+                            if (data.payload && data.payload.password) {
+                                setLoginError(data.payload.password);
+                            } else {
+                                if (data.payload && data.payload.email) {
+                                    setLoginError(data.payload.email);
+                                } else {
+                                    setLoginError(data.message);
+                                }
+                            }
+
+                        });
                     });
-                });
+            }
+        }
+        else {
+            setLoginError("Install metamask extension!!");
         }
     }
 
@@ -180,6 +196,9 @@ export default function SignUpPageSeller() {
                             id="confirmpassword"
                             onChange={(e) => setConfirmPassword(e.target.value)}
                         />
+                        <Card className="metamaskAccount">
+                            Metamask Account Connected = {metamaskAccount}
+                        </Card>
                         <Button
                             type="submit"
                             fullWidth

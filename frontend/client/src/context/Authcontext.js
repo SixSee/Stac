@@ -34,11 +34,13 @@ export const AuthContextProvider = ({ children }) => {
             .finally(() => setIsLoading(false));
     }, []);
 
+
+
     const logout = () => {
         setLoggedIn(false);
         setUser(null);
         localStorage.setItem("authtoken", null);
-        window.location.pathname = "/signup/seller";
+        window.location.pathname = "login";
         setIsLoading(false);
     };
 

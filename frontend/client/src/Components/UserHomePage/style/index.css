@@ -23,3 +23,16 @@
 .delete-item:hover{
     cursor: pointer;
 }
+
+.metamaskAccount{
+    margin: 0.6rem;
+}
+
+.stacID{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    margin-left: 45rem;
+    height: 2rem;
+    width: 20rem;
+}

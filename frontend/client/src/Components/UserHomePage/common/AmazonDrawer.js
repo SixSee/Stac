@@ -29,6 +29,7 @@ import SellerItems from './SellerItems';
 import Refunds from './Refunds';
 
 import SavingsIcon from '@mui/icons-material/Savings';
+import SoldItems from "./SoldItems";
 const drawerWidth = 240;
 
 function AmazonDrawer(props) {
@@ -46,6 +47,7 @@ function AmazonDrawer(props) {
     components = {
       // 'Market': { 'icon': [<StoreIcon />], content: [<Market />] },
       'Your Items': { 'icon': [<StoreIcon />], content: [<SellerItems />] },
+      'Sold Items': { 'icon': [<StoreIcon />], content: [<SoldItems />] },
       'Refunds': { 'icon': [<SavingsIcon />], content: [<Refunds person={"seller"} />] },
       // 'Your Orders': { 'icon': [<HistoryIcon />], content: [<Orders />] },
       'New Item': { 'icon': [<AddCircleIcon />], content: [<AddItemForm />] }
