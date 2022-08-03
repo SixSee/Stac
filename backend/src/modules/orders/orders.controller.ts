@@ -6,7 +6,7 @@ import {
   Param,
   Delete,
   UseGuards,
-  Req,
+  Req, HttpCode,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto, VerifyOrderDto } from './dto/create-order.dto';
@@ -37,11 +37,12 @@ export class OrdersController {
   storeSignedMessage(@Param('id') id: string, @Req() request) {
     return this.ordersService.storeSignedMessage(
       id,
-      request.data['signedMessage'],
+      request.body['signedMessage'],
     );
   }
 
   @Post('verify/:id')
+  @HttpCode(200)
   loginAndVerifyStacId(
     @Param('id') id: string,
     @Body() verifyStacId: VerifyOrderDto,
@@ -80,7 +81,7 @@ export class OrdersController {
   }
 
   @Get('/seller')
-  @UseGuards(BuyerGaurd)
+  @UseGuards(SellerGaurd)
   findAllBySeller(@Req() request) {
     return this.ordersService.findAllBySeller(request.user);
   }
