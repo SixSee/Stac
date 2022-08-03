@@ -54,7 +54,7 @@ export class OrdersService {
   }
 
   async getNewStacId(): Promise<string> {
-    return '12345abcde';
+    return '1234abcd';
   }
 
   findAll() {
@@ -190,5 +190,11 @@ export class OrdersService {
     const itemId = order.itemId['_id'];
     const buyer = order.buyer['_id'];
     return `${order.stacId}:${itemId}:${buyer}`;
+  }
+
+  async toggleInspectionNeeded(stacId: string) {
+    const order: Order = await this.order.findOne({ stacId: stacId });
+    order.transactionApproved = true;
+    await order.save();
   }
 }

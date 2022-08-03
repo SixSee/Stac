@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import time
 import paho.mqtt.client as mqtt
@@ -33,6 +34,7 @@ class MqttClient:
         self.username = Config.MQTT_USERNAME
         self.password = Config.MQTT_PASSWORD
         self.previous_y_axis = 0
+        self.previous_time = None
 
     def run(self):
         self.connect_to_broker()
@@ -67,37 +69,40 @@ class MqttClient:
         if (not z_axis) or (not y_axis) or (not z_axis):
             print("Improper data format... ")
             return
-#         if x_axis > 700 or abs(self.previous_y_axis - y_axis) > 90 and z_axis > 550:
-#             print(f"Fault readings... {x_axis}, {y_axis}, {z_axis}")
-#         else:
-
-        current_time = payload.get('current_time', None)
+        current_time = datetime.now()
         print(
             f"Received readings from device {device_id} on {current_time}")
 
-        # TODO-> Filter out faulty readings and send 1 reading every minute
-        # getting device information and thresholds for temperature and humidity
-        # temperature_threshold = 15
-        # ideal_temperature_val = -40
-        # ideal_humidity_val = 20
-        # humidity_threshold = 20
-        # if abs(temperature-ideal_temperature_val) > temperature_threshold or abs(humidity-ideal_humidity_val) > humidity_threshold:
-        print(
-            f"Sending faulty readings to the backend which makes a transaction on the blockhain network for device {device_id}")
-        payload = {
-            "device_id": device_id,
-            "x-axis": x_axis,
-            "y-axis": y_axis,
-            "z-axis": z_axis,
-            "time": current_time,
-        }
-        headers = {"Content-Type": "application/json"}
-        try:
-            response = requests.request(
-                "POST", f'{Config.BACKEND_HOST}/stac/readings', json=payload, headers=headers)
-            print(response.text)
-        except Exception as e:
-            print(e)
+        if x_axis > 800 or abs(self.previous_y_axis - y_axis) > 90 and z_axis > 550:
+            print(f"Fault readings... {x_axis}, {y_axis}, {z_axis}")
+            print(
+                f"Sending faulty readings to the backend which makes a transaction on the blockhain network for device {device_id}")
+            send_readings(payload={"device_id": device_id,
+                                   "x-axis": x_axis,
+                                   "y-axis": y_axis,
+                                   "z-axis": z_axis,
+                                   "time": current_time,
+                                   "inspectionNeeded": True})
+        elif self.previous_time is not None:
+
+            minutes_diff = (
+                current_time - self.previous_time).total_seconds() / 60.0
+            if minutes_diff > 1:
+                send_readings(payload={"device_id": device_id,
+                                       "x-axis": x_axis,
+                                       "y-axis": y_axis,
+                                       "z-axis": z_axis,
+                                       "time": current_time, })
+
+            self.previous_time = current_time
+        else:
+            send_readings(payload={"device_id": device_id,
+                                   "x-axis": x_axis,
+                                   "y-axis": y_axis,
+                                   "z-axis": z_axis,
+                                   "time": current_time, })
+            self.previous_time = current_time
+            # TODO-> Filter out faulty readings and send 1 reading every minute
 
     def on_connect(self, client, userdata, flags, rc):
         if rc == 0:
@@ -106,6 +111,16 @@ class MqttClient:
             print("Bad connection returned code=", rc)
         #  Subscribe to a list of topics using a lock to guarantee that a topic is only subscribed once
         client.subscribe(self.topic)
+
+
+def send_readings(payload):
+    headers = {"Content-Type": "application/json"}
+    try:
+        response = requests.request(
+            "POST", f'{Config.BACKEND_HOST}/stac/readings', json=payload, headers=headers)
+        print(response.text)
+    except Exception as e:
+        print(e)
 
 
 if __name__ == "__main__":
