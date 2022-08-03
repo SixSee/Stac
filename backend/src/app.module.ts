@@ -15,9 +15,9 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
 
 @Module({
   imports: [
+    OrdersModule,
     MongooseModule.forRoot(config.DB_URI),
     AuthModule,
-    OrdersModule,
     ItemsModule,
   ],
   controllers: [AppController],

@@ -6,10 +6,16 @@ import {
   Param,
   Delete,
   UseGuards,
-  Req, HttpCode,
+  Req,
+  HttpCode,
+  HttpException,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
-import { CreateOrderDto, VerifyOrderDto } from './dto/create-order.dto';
+import {
+  readingDto,
+  CreateOrderDto,
+  VerifyOrderDto,
+} from './dto/create-order.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { CommonGaurd } from '../../gaurds/common.gaurd';
 import { SellerGaurd } from '../../gaurds/seller.gaurd';
@@ -108,5 +114,34 @@ export class OrdersController {
   @UseGuards(SellerGaurd)
   remove(@Param('id') id: string) {
     return this.ordersService.remove(id);
+  }
+}
+
+@Controller('/stac')
+@ApiTags('/stac')
+export class OrderReadings {
+  x_axis;
+  y_axis;
+  z_axis;
+  constructor(private readonly orderService: OrdersService) {}
+
+  @Post('/readings')
+  async postReadings(@Body() readingDTO: readingDto, @Req() request) {
+    console.log(readingDTO);
+    this.z_axis = readingDTO['z-axis'];
+    this.y_axis = readingDTO['y-axis'];
+    this.z_axis = readingDTO['z-axis'];
+    if (readingDTO.inspectionNeeded)
+      await this.orderService.toggleInspectionNeeded(readingDTO.device_id);
+    throw new HttpException('Success', 200);
+  }
+
+  @Get('/readings')
+  getReadings() {
+    return {
+      'x-axis': this.x_axis,
+      'y-axis': this.y_axis,
+      'z-axis': this.z_axis,
+    };
   }
 }
