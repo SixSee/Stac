@@ -27,8 +27,6 @@ export class OrdersService {
     //TODO-> code to generate qr_code
     newOrder.refunded = 'false';
     await newOrder.save();
-    item.quantity -= 1;
-    await item.save();
     return {
       orderId: newOrder._id,
       timestamp: newOrder.createdAt,
@@ -40,7 +38,10 @@ export class OrdersService {
     const order: Order = await this.findOne(id);
     if (!order) throw new HttpException('Order not found', 404);
     order.transactionApproved = true;
+    const item: Item = await this.itemService.findOne(order.itemId);
+    item.quantity -= 1;
     await order.save();
+    await item.save();
     return { signing_message: this.createSignMessage(order) };
   }
 

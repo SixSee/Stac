@@ -10,6 +10,7 @@ export interface Order extends Document {
   stacId: string;
   signedMessage: string;
   qr_code: string;
+  inspectionNeeded: boolean;
   transactionApproved: boolean;
   status: string;
   refunded: string;
@@ -26,6 +27,7 @@ export const OrderEntity = new mongoose.Schema(
     itemId: { type: mongoose.Schema.Types.ObjectId, ref: 'Item' },
     signedMessage: { type: String, default: '' },
     transactionApproved: { type: Boolean, default: false },
+    inspectionNeeded: { type: Boolean, default: false },
     qr_code: { type: String },
     refunded: { type: String },
     refund_status: { type: String },
