@@ -24,6 +24,7 @@ export const OrderEntity = new mongoose.Schema(
     buyer: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     seller: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     itemId: { type: mongoose.Schema.Types.ObjectId, ref: 'Item' },
+    signedMessage: { type: String, default: '' },
     transactionApproved: { type: Boolean, default: false },
     qr_code: { type: String },
     refunded: { type: String },

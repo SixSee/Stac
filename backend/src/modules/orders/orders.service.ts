@@ -126,20 +126,20 @@ export class OrdersService {
     if (order.signedMessage != verifyDTO.token)
       throw new HttpException('Wrong Token, Cheating...', 400);
     //Verify signed message using etherJs
-    const userWalletAddress = ethers.utils.verifyMessage(
-      this.createSignMessage(order),
-      verifyDTO.token,
-    );
+    const userWalletAddress = ethers.utils
+      .verifyMessage(this.createSignMessage(order), verifyDTO.token)
+      .toLowerCase();
     if (userWalletAddress != jwt_user.user.walletAddress)
       throw new HttpException('Wrong Token, Cheating...', 400);
-    return {
-      accessToken: jwt_user.jwtToken,
-      user: {
-        name: jwt_user.user.fullName,
-        username: jwt_user.user.username,
-        role: jwt_user.user.role,
-      },
-    };
+    // return {
+    //   accessToken: jwt_user.jwtToken,
+    //   user: {
+    //     name: jwt_user.user.fullName,
+    //     username: jwt_user.user.username,
+    //     role: jwt_user.user.role,
+    //   },
+    // };
+    return { stacId: order.stacId };
   }
 
   async performRefund(id: string) {
